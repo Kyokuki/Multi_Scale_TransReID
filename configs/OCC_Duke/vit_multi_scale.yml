@@ -1,0 +1,60 @@
+MODEL:
+  PRETRAIN_CHOICE: 'multi_imagenet'
+  PRETRAIN_PATH_LARGE: 'pretrained/jx_vit_base_p32_384-830016f5.pth'
+  PRETRAIN_PATH_SMALL: 'pretrained/jx_vit_base_p16_384-83fb41ba.pth'
+  METRIC_LOSS_TYPE: 'triplet'
+  IF_LABELSMOOTH: 'off'
+  IF_WITH_CENTER: 'no'
+  NAME: 'multi_scale_transformer'
+  NAME_SMALL: 'small_scale_transformer'
+  NAME_LARGE: 'large_scale_transformer'
+  NO_MARGIN: True
+  DEVICE_ID: ('0')
+  TRANSFORMER_TYPE_SMALL: 'vit_base_patch16_224_TransReID'
+  TRANSFORMER_TYPE_LARGE: 'vit_base_patch32_224_TransReID'
+  STRIDE_SIZE_SMALL: [16, 16]
+  STRIDE_SIZE_LARGE: [32, 32]
+
+INPUT:
+  SIZE_TRAIN: [256, 128]
+  SIZE_TEST: [256, 128]
+  PROB: 0.5
+  RE_PROB: 0.5
+  PADDING: 10
+  PIXEL_MEAN: [0.5, 0.5, 0.5]
+  PIXEL_STD: [0.5, 0.5, 0.5]
+
+DATASETS:
+  NAMES: ('occ_duke')
+  ROOT_DIR: ('/media/data1/caixuh/Multi_Scale_Trans_ReID/data')
+
+DATALOADER:
+  SAMPLER: 'softmax_triplet'
+  NUM_INSTANCE: 4
+  NUM_WORKERS: 8
+
+SOLVER:
+  OPTIMIZER_NAME: 'SGD'
+  MAX_EPOCHS: 120
+  BASE_LR: 0.008
+  IMS_PER_BATCH: 64
+  WARMUP_METHOD: 'linear'
+  LARGE_FC_LR: False
+  CHECKPOINT_PERIOD: 30
+  LOG_PERIOD: 50
+  EVAL_PERIOD: 30
+  WEIGHT_DECAY:  1e-4
+  WEIGHT_DECAY_BIAS: 1e-4
+  BIAS_LR_FACTOR: 2
+
+TEST:
+  EVAL: True
+  IMS_PER_BATCH: 256
+  RE_RANKING: False
+  WEIGHT: '../logs/occ_duke_vit_multi_scale/multi_scale_transformer_120.pth'
+  NECK_FEAT: 'before'
+  FEAT_NORM: 'yes'
+
+OUTPUT_DIR: '../logs/occ_duke_vit_multi_scale'
+
+
